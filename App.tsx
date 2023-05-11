@@ -1,20 +1,39 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from "react";
+import * as SplashScreen from "expo-splash-screen";
+import RootNavigator from "./src/navigation/RootNavigator";
+import { ThemeProvider } from "styled-components/native";
+import { useColorScheme } from "react-native";
+import { darkTheme, lightTheme } from "./styled";
 
-export default function App() {
+SplashScreen.preventAutoHideAsync();
+
+const App = () => {
+  const isDark = useColorScheme() === "dark";
+
+  const [ready, setReady] = useState<boolean>(false);
+
+  const prepare = async () => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    } catch (e) {
+      console.warn(e);
+    } finally {
+      await SplashScreen.hideAsync();
+      setReady(true);
+    }
+  };
+
+  useEffect(() => {
+    if (!ready) {
+      prepare();
+    }
+  }, [ready]);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+      <RootNavigator />;
+    </ThemeProvider>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
