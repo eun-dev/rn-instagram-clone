@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
-import RootNavigator from "./src/navigation/RootNavigator";
 import { ThemeProvider } from "styled-components/native";
-import { useColorScheme } from "react-native";
+import { Text, View, useColorScheme } from "react-native";
+import * as Font from "expo-font";
+import { Ionicons } from "@expo/vector-icons";
+import { NavigationContainer } from "@react-navigation/native";
+
+import RootNavigator from "./src/navigation/RootNavigator";
 import { darkTheme, lightTheme } from "./styled";
 
 SplashScreen.preventAutoHideAsync();
@@ -14,6 +18,8 @@ const App = () => {
 
   const prepare = async () => {
     try {
+      await Font.loadAsync(Ionicons.font);
+
       await new Promise((resolve) => setTimeout(resolve, 2000));
     } catch (e) {
       console.warn(e);
@@ -31,7 +37,9 @@ const App = () => {
 
   return (
     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <RootNavigator />;
+      <NavigationContainer>
+        <RootNavigator />
+      </NavigationContainer>
     </ThemeProvider>
   );
 };
